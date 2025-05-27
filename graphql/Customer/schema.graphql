@@ -1,0 +1,67 @@
+scalar Time @scalar(class: "App\\GraphQL\\Scalars\\TimeScalar")
+scalar DateTime @scalar(class: "App\\GraphQL\\Scalars\\DateTime")
+scalar Date @scalar(class: "App\\GraphQL\\Scalars\\Date")
+
+type Customer {
+  customer_id: ID!
+  plat_number: String!
+  name: String!
+  phone_number: String!
+  vehicle_type_id: ID!
+  vehicletype: VehicleType @belongsTo
+  vehicle_color: String!
+  member_number: String!
+  join_date: Date
+  member_expiry_date: DateTime!
+  is_member: Boolean!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input CustomerCreateInput {
+  plat_number: String
+  name: String
+  phone_number: String
+  vehicle_type_id: Int
+  vehicle_color: String
+  member_number: String
+  join_date: Date
+  member_expiry_date: DateTime
+  is_member: Boolean = true
+}
+
+input CustomerUpdateInput {
+  plat_number: String
+  name: String
+  phone_number: String
+  vehicle_type_id: Int
+  vehicle_color: String
+  member_number: String
+  join_date: Date
+  member_expiry_date: DateTime
+  is_member: Boolean = true
+}
+
+extend type Query {
+  customers: [Customer!]! @all(model: "App\\Models\\Customer\\Customer")
+  customer(customer_id: ID! @eq): Customer @find(model: "App\\Models \\Customer\\Customer")
+  activeCustomers: [Customer!]! @all(model: "App\\Models\\Customer\\Customer", scopes:["active"])
+  vehicletypeCustomers(vehicle_type_id: ID! @eq): [Customer!]! @all(model: "App\\Models\\Customer\\Customer")
+}
+
+extend type Mutation {
+  createCustomer (input: CustomerCreateInput! @spread): Customer
+    @create(model: "App\\Models\\Customer\\Customer")
+
+  updateCustomer(
+    customer_id: ID! @eq(key: "customer_id"),
+    input: CustomerUpdateInput! @spread
+  ): Customer @update(model: "App\\Models\\Customer\\Customer")
+    
+  deleteCustomer(customer_id: ID! @eq(key: "customer_id")): Customer
+    @delete(model: "App\\Models\\Customer\\Customer")
+
+  toggleCustomers(staff_id: ID!): Customer
+    @find(resolver: "App\\Models\\Customer\\Customer@toggleStatus")
+
+}

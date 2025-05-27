@@ -1,0 +1,65 @@
+scalar Time @scalar(class: "App\\GraphQL\\Scalars\\TimeScalar")
+
+type Staff {
+  staff_id: ID!
+  name: String!
+  email: String!
+  phone_number: String!
+  password_hash: String!
+  outlet_id: ID!
+  outlet: Outlet @belongsTo
+  role_id: ID!
+  role: Role @belongsTo
+  is_active: Boolean!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input StaffCreateInput {
+  name: String
+  email: String
+  description: String
+  phone_number: String
+  password_hash: String
+  outlet_id: ID
+  role_id: ID
+  is_active: Boolean = true
+}
+
+input StaffUpdateInput {
+  name: String
+  email: String
+  description: String
+  phone_number: String
+  password_hash: String
+  outlet_id: ID
+  role_id: ID
+  is_active: Boolean = true
+}
+
+extend type Query {
+  staffs: [Staff!]! @all(model: "App\\Models\\Staff\\Staff")
+  staff(staff_id: ID! @eq): Staff @find(model: "App\\Models \\Staff\\Staff")
+  activeStaffs: [Staff!]! @all(model: "App\\Models\\Staff\\Staff", scopes:["active"])
+  outletStaffs(outlet_id: ID! @eq): [Staff!]! @all(model: "App\\Models\\Staff\\Staff")
+  roleStaffs(role_id: ID! @eq): [Staff!]! @all(model: "App\\Models\\Staff\\Staff")
+}
+
+extend type Mutation {
+  createStaff(input: StaffCreateInput! @spread): Staff
+    @create(model: "App\\Models\\Staff\\Staff")
+
+  updateStaff(
+    staff_id: ID! @eq(key: "staff_id"),
+    input: StaffUpdateInput! @spread
+  ): Staff @update(model: "App\\Models\\Staff\\Staff")
+    
+  deleteStaff(staff_id: ID! @eq(key: staff_id)): Staff
+    @delete(model: "App\\Models\\Staff\\Staff")
+
+  
+  toggleStaffStatus(staff_id: ID!): Staff
+    @find(resolver: "App\\Models\\Staff\\Staff@toggleStatus")
+
+}
+

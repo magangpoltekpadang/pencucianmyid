@@ -1,0 +1,58 @@
+type NotificationType {
+  notification_type_id: ID!
+  type_name: String!
+  code: String!
+  tamplate_text: String!
+  is_active: Boolean!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input NotificationTypeInput {
+  type_name: String
+  code: String
+  tamplate_text: String
+  is_active: Boolean = true
+}
+
+input NotificationTypeCreateInput {
+  type_name: String
+  code: String
+  tamplate_text: String
+  is_active: Boolean = true
+}
+
+input NotificationTypeFilter {
+  id: ID
+  is_active: Boolean = true
+  search: String @where(operator: "like")
+}
+
+extend type Query {
+  notificationtypes(
+    search: String
+    is_active: Boolean
+  ): [NotificationType!]! @all(model: "App\\Models\\NotificationType\\NotificationType")
+
+  notificationtype(notification_type_id: ID! @eq(key: "notification_type_id")): NotificationType
+  @find(model: "App\\Models\\NotificationType\\NotificationType")
+}
+
+extend type Mutation {
+  createNotificationType(input: NotificationTypeCreateInput! @spread): NotificationType
+    @create(model: "App\\Models\\NotificationType\\NotificationType")
+
+  updateNotificationType(
+    notification_type_id: ID! @eq(key: "notification_type_id"),
+    input: NotificationTypeInput! @spread
+  ): NotificationType @update(model: "App\\Models\\NotificationType\\NotificationType")
+    
+  deleteNotificationType(notification_type_id: ID! @eq(key: "notification_type_id")): NotificationType
+    @delete(model: "App\\Models\\NotificationType\\NotificationType")
+
+}
+
+type NotificationTypePaginator {
+  data: [NotificationType!]!
+  paginatorInfo: paginatorInfo!
+}

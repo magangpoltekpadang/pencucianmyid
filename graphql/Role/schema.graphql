@@ -1,0 +1,54 @@
+type Role {
+  role_id: ID!
+  role_name: String!
+  code: String!
+  description: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input RoleInput {
+  role_name: String
+  code: String
+  description: String
+}
+
+input RoleCreateInput {
+  role_name: String
+  code: String
+  description: String
+}
+
+input RoleFilter {
+  id: ID
+  code: String
+  search: String @where(operator: "like")
+}
+
+extend type Query {
+  roles(
+    search: String
+  ): [Role!]! @all(model: "App\\Models\\Role\\Role")
+
+  role(role_id: ID! @eq(key: "role_id")): Role
+  @find(model: "App\\Models\\Role\\Role")
+}
+
+extend type Mutation {
+  createRole(input: RoleCreateInput! @spread): Role
+    @create(model: "App\\Models\\Role\\Role")
+
+  updateRole(
+    role_id: ID! @eq(key: "role_id"),
+    input: RoleInput! @spread
+  ): Role @update(model: "App\\Models\\Role\\Role")
+    
+  deleteRole(role_id: ID! @eq(key: "role_id")): Role
+    @delete(model: "App\\Models\\Role\\Role")
+
+}
+
+type RolePaginator {
+  data: [Role!]!
+  paginatorInfo: paginatorInfo!
+}

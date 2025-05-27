@@ -1,0 +1,59 @@
+type ServiceType {
+  service_type_id: ID!
+  type_name: String!
+  code: String!
+  description: String!
+  is_active: Boolean!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input ServiceTypeInput {
+  type_name: String
+  code: String
+  description: String
+  is_active: Boolean = true
+}
+
+input ServiceTypeCreateInput {
+  type_name: String
+  code: String
+  description: String
+  is_active: Boolean = true
+}
+
+# input ServiceTypeFilter {
+#   id: ID
+#   code: String
+#   is_active: Boolean = true
+#   search: String @where(operator: "like")
+# }
+
+extend type Query {
+  serviceTypes(
+    search: String
+    is_active: Boolean
+  ): [ServiceType!]! @all(model: "App\\Models\\ServiceType\\ServiceType")
+
+  serviceType(service_type_id: ID! @eq(key: "service_type_id")): ServiceType
+  @find(model: "App\\Models\\ServiceType\\ServiceType")
+}
+
+extend type Mutation {
+  createServiceType(input: ServiceTypeCreateInput! @spread): ServiceType
+    @create(model: "App\\Models\\ServiceType\\ServiceType")
+
+  updateServiceType(
+    service_type_id: ID! @eq(key: "service_type_id"),
+    input: ServiceTypeInput! @spread
+  ): ServiceType @update(model: "App\\Models\\ServiceType\\ServiceType")
+    
+  deleteServiceType(service_type_id: ID! @eq(key: service_type_id)): ServiceType
+    @delete(model: "App\\Models\\ServiceType\\ServiceType")
+
+}
+
+type ServiceTypePaginator {
+  data: [ServiceType! ]!
+  paginatorInfo: paginatorInfo!
+}

@@ -1,0 +1,62 @@
+scalar DateTime @scalar(class: "App\\GraphQL\\Scalars\\DateTime")
+scalar Date @scalar(class: "App\\GraphQL\\Scalars\\Date")
+
+type TransactionPayment {
+  payment_id: ID!
+  transaction_id: ID!
+  payment_method_id: ID!
+  amount: Float!
+  payment_date: DateTime!
+  reference_number: String!
+  status_id: ID!
+  notes: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input TransactionPaymentCreateInput {
+  transaction_id: Int
+  payment_method_id: Int
+  amount: Float
+  payment_date: DateTime
+  reference_number: String
+  status_id: Int
+  notes: String
+}
+
+input TransactionPaymentUpdateInput {
+  transaction_id: Int
+  payment_method_id: Int
+  amount: Float
+  payment_date: DateTime
+  reference_number: String
+  status_id: Int
+  notes: String
+}
+
+
+extend type Query {
+  transactionpayments: [TransactionPayment!]! @all(model: "App\\Models\\TransactionPayment\\TransactionPayment")
+  transactionpayment(payment_id: ID! @eq): TransactionPayment @find(model: "App\\Models \\TransactionPayment\\TransactionPayment")
+  transactionPayments(transaction_id: ID! @eq): [TransactionPayment!]! @all(model: "App\\Models\\TransactionPayment\\TransactionPayment")
+  methodPayments(payment_method_id: ID! @eq): [TransactionPayment!]! @all(model: "App\\Models\\TransactionPayment\\TransactionPayment")
+  statusPayments(status_id: ID! @eq): [TransactionPayment!]! @all(model: "App\\Models\\TransactionPayment\\TransactionPayment")
+}
+
+extend type Mutation {
+  createTransactionPayment(input: TransactionPaymentCreateInput! @spread): TransactionPayment
+    @create(model: "App\\Models\\TransactionPayment\\TransactionPayment")
+
+  updateTransactionPayment(
+    payment_id: ID! @eq(key: "payment_id"),
+    input: TransactionPaymentUpdateInput! @spread
+  ): TransactionPayment @update(model: "App\\Models\\TransactionPayment\\TransactionPayment")
+    
+  deleteTransactionPayment(payment_id: ID! @eq(key: "payment_id")): TransactionPayment
+    @delete(model: "App\\Models\\TransactionPayment\\TransactionPayment")
+
+
+  toggleTransactionPayment(staff_id: ID!): TransactionPayment
+    @find(resolver: "App\\Models\\TransactionPayment\\TransactionPayment@toggleStatus")
+
+}

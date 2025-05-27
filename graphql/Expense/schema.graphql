@@ -1,0 +1,64 @@
+scalar Time @scalar(class: "App\\GraphQL\\Scalars\\TimeScalar")
+scalar DateTime @scalar(class: "App\\GraphQL\\Scalars\\DateTime")
+scalar Date @scalar(class: "App\\GraphQL\\Scalars\\Date")
+
+type Expense {
+  expense_id: ID!
+  expense_code: String!
+  outlet_id: ID!
+  expense_date: Date!
+  amount: Float!
+  category: String!
+  description: String!
+  staff_id: ID!
+  shift_id: ID!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input ExpenseCreateInput {
+  expense_code: String
+  outlet_id: ID
+  expense_date: Date
+  amount: Float
+  category: String
+  description: String
+  staff_id: ID
+  shift_id: ID
+}
+
+input ExpenseUpdateInput {
+  expense_code: String
+  outlet_id: ID
+  expense_date: Date
+  amount: Float
+  category: String
+  description: String
+  staff_id: ID
+  shift_id: ID
+}
+
+extend type Query {
+  expenses: [Expense!]! @all(model: "App\\Models\\Expense\\Expense")
+  expense(expense_id: ID! @eq): Expense @find(model: "App\\Models \\Expense\\Expense")
+  outletExpenses(outlet_id: ID! @eq): [Expense!]! @all(model: "App\\Models\\Expense\\Expense")
+  staffExpenses(staff_id: ID! @eq): [Expense!]! @all(model: "App\\Models\\Expense\\Expense")
+  shiftExpenses(shift_id: ID! @eq): [Expense!]! @all(model: "App\\Models\\Expense\\Expense")
+}
+
+extend type Mutation {
+  createExpense (input: ExpenseCreateInput! @spread): Expense
+    @create(model: "App\\Models\\Expense\\Expense")
+
+  updateExpense(
+    expense_id: ID! @eq(key: "customer_id"),
+    input: ExpenseUpdateInput! @spread
+  ): Expense @update(model: "App\\Models\\Expense\\Expense")
+    
+  deleteExpense(expense_id: ID! @eq(key: "expense_id")): Expense
+    @delete(model: "App\\Models\\Expense\\Expense")
+
+  toggleExpenses(staff_id: ID!): Expense
+    @find(resolver: "App\\Models\\Expense\\Expense@toggleStatus")
+
+}

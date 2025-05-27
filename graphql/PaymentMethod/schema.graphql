@@ -1,0 +1,54 @@
+type PaymentMethod {
+  payment_method_id: ID!
+  methode_name: String!
+  code: String!
+  is_active: Boolean!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input PaymentMethodInput {
+  methode_name: String
+  code: String
+  is_active: Boolean = true
+}
+
+input PaymentMethodCreateInput {
+  methode_name: String
+  code: String
+  is_active: Boolean = true
+}
+
+input PaymentMethodFilter {
+  id: ID
+  code: String
+  search: String @where(operator: "like")
+}
+
+extend type Query {
+  paymentmethodes(
+    search: String
+  ): [PaymentMethod!]! @all(model: "App\\Models\\PaymentMethod\\PaymentMethod")
+
+  paymentmethod(payment_method_id: ID! @eq(key: "payment_method_id")): PaymentMethod
+  @find(model: "App\\Models\\PaymentMethod\\PaymentMethod")
+}
+
+extend type Mutation {
+  createPaymentMethod(input: PaymentMethodCreateInput! @spread): PaymentMethod
+    @create(model: "App\\Models\\PaymentMethod\\PaymentMethod")
+
+  updatePaymentMethod(
+    payment_method_id: ID! @eq(key: "payment_method_id"),
+    input: PaymentMethodInput! @spread
+  ): PaymentMethod @update(model: "App\\Models\\PaymentMethod\\PaymentMethod")
+    
+  deletePaymentMethod(payment_method_id: ID! @eq(key: "payment_method_id")): PaymentMethod
+    @delete(model: "App\\Models\\PaymentMethod\\PaymentMethod")
+
+}
+
+type PaymentMethodPaginator {
+  data: [PaymentMethod!]!
+  paginatorInfo: paginatorInfo!
+}

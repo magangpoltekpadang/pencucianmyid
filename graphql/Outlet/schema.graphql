@@ -1,0 +1,64 @@
+type Outlet {
+  id_outlet: ID!
+  outlet_name: String!
+  address: String!
+  phone_number: String!
+  latitude: String!
+  longitude: String!
+  is_active: Boolean!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input OutletInput {
+  Outlet_Name: String
+  address: String
+  phone_number: String
+  latidude: String
+  longitude: String
+  is_active: Boolean = true
+}
+
+input OutletCreateInput {
+  outlet_name: String
+  address: String
+  phone_number: String
+  latidude: String
+  longitude: String
+  is_active: Boolean = true
+}
+
+input OutletFilter {
+  id: ID
+  is_active: Boolean = true
+  search: String @where(operator: "like")
+}
+
+extend type Query {
+  outlets(
+    search: String
+    is_active: Boolean
+  ): [Outlet!]! @all(model: "App\\Models\\Outlet\\Outlet")
+
+  outlet(id_outlet: ID! @eq(key: "id_outle")): Outlet
+  @find(model: "App\\Models\\Outlet\\Outlet")
+}
+
+extend type Mutation {
+  createOutlet (input: OutletCreateInput! @spread): Outlet
+    @create(model: "App\\Models\\Outlet\\Outlet")
+
+  updateOutlet(
+    id_outlet: ID! @eq(key: "id_outlet"),
+    input: OutletInput! @spread
+  ): Outlet @update(model: "App\\Models\\Outlet\\Outlet")
+    
+  deleteOutlet(id_outlet: ID! @eq(key: "id_outlet")): Outlet
+    @delete(model: "App\\Models\\Outlet\\Outlet")
+
+}
+
+type OutletPaginator {
+  data: [Outlet! ]!
+  paginatorInfo: paginatorInfo!
+}

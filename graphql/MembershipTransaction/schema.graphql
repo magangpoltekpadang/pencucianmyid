@@ -1,0 +1,71 @@
+type MembershipTransaction {
+  member_transaction_id: ID!
+  customer_id: Int!
+  package_id: Int!
+  outlet_id: Int!
+  transaction_date: DateTime!
+  expiry_date: DateTime!
+  price: Float!
+  payment_method_id: Int!
+  staff_id: Int!
+  receipt_number: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input MembershipTransactionInput {
+  customer_id: Int
+  package_id: Int
+  outlet_id: Int
+  transaction_date: DateTime
+  expiry_date: DateTime
+  price: Float
+  payment_method_id: Int
+  staff_id: Int
+  receipt_number: String
+}
+
+input MembershipTransactionCreateInput {
+  customer_id: Int
+  package_id: Int
+  outlet_id: Int
+  transaction_date: DateTime
+  expiry_date: DateTime
+  price: Float
+  payment_method_id: Int
+  staff_id: Int
+  receipt_number: String
+}
+
+input MembershipTransactionFilter {
+  id: ID
+  search: String @where(operator: "like")
+}
+
+extend type Query {
+  membershiptransactions(
+    search: String
+  ): [MembershipTransaction!]! @all(model: "App\\Models\\MembershipTransaction\\MembershipTransaction")
+
+  membershiptransaction(member_transaction_id: ID! @eq(key: "member_transaction_id")): MembershipTransaction
+  @find(model: "App\\Models\\MembershipTransaction\\MembershipTransaction")
+}
+
+extend type Mutation {
+  createMembershipTransaction(input: MembershipTransactionCreateInput! @spread): MembershipTransaction
+    @create(model: "App\\Models\\MembershipTransaction\\MembershipTransaction")
+
+  updateMembershipTransaction(
+    member_transaction_id: ID! @eq(key: "member_transaction_id"),
+    input: MembershipTransactionInput! @spread
+  ): MembershipTransaction @update(model: "App\\Models\\MembershipTransaction\\MembershipTransaction")
+    
+  deleteMembershipTransaction(member_transaction_id: ID! @eq(key: "member_transaction_id")): MembershipTransaction
+    @delete(model: "App\\Models\\MembershipTransaction\\MembershipTransaction")
+
+}
+
+type MembershipTransactionPaginator {
+  data: [MembershipTransaction!]!
+  paginatorInfo: paginatorInfo!
+}

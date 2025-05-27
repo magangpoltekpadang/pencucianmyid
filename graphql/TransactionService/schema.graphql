@@ -1,0 +1,85 @@
+enum TransactionServiceStatus{
+  pending
+  success
+  cancel
+}
+
+type TransactionService {
+  transaction_service_id: ID!
+  transaction_id: Int!
+  service_id: Int!
+  quantity: String!
+  unit_price: String!
+  discount: String!
+  total_discount: String!
+  worker_id: Int!
+  start_time: String!
+  end_time: String!
+  status: TransactionServiceStatus!
+  notes: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input TransactionServiceInput {
+  transaction_id: Int
+  service_id: Int
+  quantity: String
+  unit_price: String
+  discount: String
+  total_discount: String
+  worker_id: Int
+  start_time: String
+  end_time: String
+  status: TransactionServiceStatus
+  notes: String
+}
+
+input TransactionServiceCreateInput {
+  transaction_id: Int
+  service_id: Int
+  quantity: String
+  unit_price: String
+  discount: String
+  total_discount: String
+  worker_id: Int
+  start_time: String
+  end_time: String
+  status: TransactionServiceStatus
+  notes: String
+}
+
+input TransactionServiceFilter {
+  id: ID
+  status: TransactionServiceStatus
+  search: String @where(operator: "like")
+}
+
+extend type Query {
+  transactionservices(
+    search: String
+    status: TransactionServiceStatus
+  ): [TransactionService!]! @all(model: "App\\Models\\TransactionService\\TransactionService")
+
+  transactionservice(transaction_service_id: ID! @eq(key: "transaction_service_id")): TransactionService
+  @find(model: "App\\Models\\TransactionService\\TransactionService")
+}
+
+extend type Mutation {
+  TransactionService (input: TransactionServiceCreateInput! @spread): TransactionService
+    @create(model: "App\\Models\\TransactionService\\TransactionService")
+
+  updateTransactionService(
+    transaction_service_id: ID! @eq(key: "transaction_service_id"),
+    input: TransactionServiceInput! @spread
+  ): TransactionService @update(model: "App\\Models\\TransactionService\\TransactionService")
+    
+  deleteTransactionService(transaction_service_id: ID! @eq(key: "transaction_service_id")): TransactionService
+    @delete(model: "App\\Models\\TransactionService\\TransactionService")
+
+}
+
+type TransactionServicePaginator {
+  data: [TransactionService! ]!
+  paginatorInfo: paginatorInfo!
+}

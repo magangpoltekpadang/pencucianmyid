@@ -1,0 +1,61 @@
+scalar Time @scalar(class: "App\\GraphQL\\Scalars\\TimeScalar")
+
+type Service {
+  service_id: ID!
+  service_name: String!
+  service_type_id: ID!
+  servicetype: ServiceType @belongsTo
+  price: Float!
+  estimated_duration: Int!
+  description: String!
+  is_active: Boolean!
+  outlet_id: ID!
+  outlet: Outlet @belongsTo
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input ServiceCreateInput {
+  service_name: String
+  service_type_id: ID
+  price: Float
+  estimated_duration: Int
+  description: String
+  is_active: Boolean = true
+  outlet_id: ID
+}
+
+input ServiceUpdateInput {
+  service_name: String
+  service_type_id: ID
+  price: Float
+  estimated_duration: Int
+  description: String
+  is_active: Boolean = true
+  outlet_id: ID
+}
+
+extend type Query {
+  services: [Service!]! @all(model: "App\\Models\\Service\\Service")
+  service(service_id: ID! @eq): Service @find(model: "App\\Models \\Service\\Service")
+  activeservices: [Service!]! @all(model: "App\\Models\\Service\\Service", scopes:["active"])
+  servicetypeServices(service_id: ID! @eq): [Service!]! @all(model: "App\\Models\\Service\\Service")
+  outletServices(service_id: ID! @eq): [Service!]! @all(model: "App\\Models\\Service\\Service")
+}
+
+extend type Mutation {
+  createService(input: ServiceCreateInput! @spread): Service
+    @create(model: "App\\Models\\Service\\Service")
+
+  updateService(
+    service_id: ID! @eq(key: "service_id"),
+    input: ServiceUpdateInput! @spread
+  ): Service @update(model: "App\\Models\\Service\\Service")
+    
+  deleteService(service_id: ID! @eq(key: "service_id")): Service
+    @delete(model: "App\\Models\\Service\\Service")
+
+  toggleServiceStatus(service_id: ID!): Staff
+    @find(resolver: "App\\Models\\Service\\Service@toggleStatus")
+
+}

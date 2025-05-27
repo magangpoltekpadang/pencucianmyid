@@ -1,0 +1,62 @@
+type MembershipPackage {
+  package_id: ID!
+  package_name: String!
+  duration_days: Int!
+  price: Float!
+  max_vechiles: Int!
+  description: String!
+  is_active: Boolean!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input MembershipPackageInput {
+  package_name: String
+  duration_days: Int
+  price: Float
+  max_vechiles: Int
+  description: String
+  is_active: Boolean = true
+}
+
+input MembershipPackageCreateInput {
+  package_name: String
+  duration_days: Int
+  price: Float
+  max_vechiles: Int
+  description: String
+  is_active: Boolean = true
+}
+
+input MembershipPackageFilter {
+  id: ID
+  search: String @where(operator: "like")
+}
+
+extend type Query {
+  membershipackages(
+    search: String
+  ): [MembershipPackage!]! @all(model: "App\\Models\\MembershipPackage\\MembershipPackage")
+
+  membershippackage(package_id: ID! @eq(key: "package_id")): MembershipPackage
+  @find(model: "App\\Models\\MembershipPackage\\MembershipPackage")
+}
+
+extend type Mutation {
+  createMembershipPackage(input: MembershipPackageCreateInput! @spread): MembershipPackage
+    @create(model: "App\\Models\\MembershipPackage\\MembershipPackage")
+
+  updateMembershipPackage(
+    package_id: ID! @eq(key: "package_id"),
+    input: MembershipPackageInput! @spread
+  ): MembershipPackage @update(model: "App\\Models\\MembershipPackage\\MembershipPackage")
+    
+  deleteMembershipPackage(package_id: ID! @eq(key: "package_id")): MembershipPackage
+    @delete(model: "App\\Models\\MembershipPackage\\MembershipPackage")
+
+}
+
+type MembershipPackagePaginator {
+  data: [MembershipPackage!]!
+  paginatorInfo: paginatorInfo!
+}

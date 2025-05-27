@@ -1,0 +1,20 @@
+#import ./VehicleType/schema.graphql
+#import ./ServiceTypes/schema.graphql
+#import ./Outlet/schema.graphql
+#import ./Shift/schema.graphql
+#import ./Role/schema.graphql
+#import ./Service/schema.graphql
+#import ./Customer/schema.graphql
+#import ./Staff/schema.graphql
+#import ./Expense/schema.graphql
+#import ./PaymentStatus/schema.graphql
+#import ./PaymentMethod/schema.graphql
+#import ./MembershipPackage/schema.graphql
+#import ./MembershipTransaction/schema.graphql
+#import ./Transaction/schema.graphql
+#import ./NotificationTypes/schema.graphql
+#import ./NotificationStatus/schema.graphql
+#import ./TransactionPayment/schema.graphql
+#import ./Notification/schema.graphql
+#import ./TransactionService/schema.graphql
+

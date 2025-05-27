@@ -1,0 +1,57 @@
+scalar Time @scalar(class: "App\\GraphQL\\Scalars\\TimeScalar")
+scalar DateTime @scalar(class: "App\\GraphQL\\Scalars\\DateTime")
+scalar Date @scalar(class: "App\\GraphQL\\Scalars\\Date")
+
+type Notification {
+  notification_id: ID!
+  customer_id: ID!
+  notification_type_id: ID!
+  message: String!
+  sent_at: DateTime!
+  status_id: ID!
+  rentry_count: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+input NotificationCreateInput {
+  customer_id: ID
+  notification_type_id: ID
+  message: String
+  sent_at: DateTime
+  status_id: ID
+  rentry_count: Int
+}
+
+input NotificationUpdateInput {
+  customer_id: ID
+  notification_type_id: ID
+  message: String
+  sent_at: DateTime
+  status_id: ID
+  rentry_count: Int
+}
+
+extend type Query {
+  notifications: [Notification!]! @all(model: "App\\Models\\Notification\\Notification")
+  notification(notification_id: ID! @eq): Notification @find(model: "App\\Models \\Notification\\Notification")
+  customerNotifications(customer_id: ID! @eq): [Notification!]! @all(model: "App\\Models\\Notification\\Notification")
+  typeNotifications(notification_type_id: ID! @eq): [Notification!]! @all(model: "App\\Models\\Notification\\Notification")
+  statusNotifications(status_id: ID! @eq): [Notification!]! @all(model: "App\\Models\\Notification\\Notification")
+}
+
+extend type Mutation {
+  createNotification(input: NotificationCreateInput! @spread): Notification
+    @create(model: "App\\Models\\Notification\\Notification")
+
+  updateNotification(
+    notification_id: ID! @eq(key: "notification_id"),
+    input: NotificationUpdateInput! @spread
+  ): Notification @update(model: "App\\Models\\Notification\\Notification")
+    
+  deleteNotification(notification_id: ID! @eq(key: "notification_id")): Notification
+    @delete(model: "App\\Models\\Notification\\Notification")
+
+  toggleNotifications(notification_id: ID!): Notification
+    @find(resolver: "App\\Models\\Notification\\Notification@toggleStatus")
+}
