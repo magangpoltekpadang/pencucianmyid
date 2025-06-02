@@ -28,7 +28,7 @@ class Staff extends Model
         'updated_at' => 'datetime'
     ];
 
-    protected $table= 'staffs';
+    protected $table= 'staff';
 
     public function outlet(): BelongsTo 
    {
