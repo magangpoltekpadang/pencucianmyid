@@ -1,6 +1,6 @@
-function vehicleTypeData() {
+function staffData() {
     return {
-        vehicleTypes: [],
+        staffs: [],
         pagination: {
             current_page: 1,
             last_page: 1,
@@ -13,21 +13,24 @@ function vehicleTypeData() {
         search: '',
         status: '',
         showDeleteModal: false,
-        vehicleTypeIdToDelete: null,
+        staffIdToDelete: null,
 
         init() {
-            this.fetchVehicleTypes();
+            this.fetchStaffs();
         },
 
-        async fetchVehicleTypes() {
+        async fetchStaffs() {
             try {
                 const query = `
                     query($search: String, $is_active: Boolean) {
-                        vehicleTypes(search: $search, is_active: $is_active) {
-                        vehicle_type_id
-                        type_name
-                        code
-                        description
+                        staffs(search: $search, is_active: $is_active) {
+                        staff_id
+                        name
+                        email
+                        phone_number
+                        password_hash
+                        outlet_id
+                        role_id
                         is_active
                         }
                     }
@@ -51,49 +54,49 @@ function vehicleTypeData() {
                     console.error('GraphQL errors:', result.errors);
                     return;
                 }
-                console.log('Fetched data:', result.data.vehicleTypes);
+                console.log('Fetched data:', result.data.staffs);
 
-                this.vehicleTypes = result.data.vehicleTypes || [];
+                this.staffs = result.data.staffs || [];
 
                 if (this.status !== '') {
                     const isActiveBool = this.status === '1';
-                    this.vehicleTypes = this.vehicleTypes.filter(v => v.is_active === isActiveBool);
+                    this.staffs = this.staffs.filter(s => s.is_active === isActiveBool);
                 }
 
                 if (this.search) {
                     const lowerSearch = this.search.toLowerCase();
-                    this.vehicleTypes = this.vehicleTypes.filter(v =>
-                        v.type_name.toLowerCase().includes(lowerSearch) 
+                    this.staffs = this.staffs.filter(s =>
+                        s.name.toLowerCase().includes(lowerSearch) 
                     );
                 }
 
                 // Karena kita belum dapat info pagination dari GraphQL, kita hitung manual
-                this.pagination.total = this.vehicleTypes.length;
+                this.pagination.total = this.staffs.length;
                 this.pagination.last_page = 1;
                 this.pagination.from = 1;
-                this.pagination.to = this.vehicleTypes.length;
+                this.pagination.to = this.staffs.length;
             } catch (error) {
-                console.error('Error fetching vehicle types:', error);
+                console.error('Error fetching staffs:', error);
             }
         },
 
         async changePage(page) {
             if (page === '...' || isNaN(page)) return;
             this.pagination.current_page = parseInt(page);
-            await this.fetchVehicleTypes();
+            await this.fetchStaffs();
         },
 
         async previousPage() {
             if (this.pagination.current_page > 1) {
                 this.pagination.current_page--;
-                await this.fetchVehicleTypes();
+                await this.fetchStaffs();
             }
         },
 
         async nextPage() {
             if (this.pagination.current_page < this.pagination.last_page) {
                 this.pagination.current_page++;
-                await this.fetchVehicleTypes();
+                await this.fetchSraffs();
             }
         },
 
@@ -101,26 +104,26 @@ function vehicleTypeData() {
             this.search = '';
             this.status = '';
             this.pagination.current_page = 1;
-            await this.fetchVehicleTypes();
+            await this.fetchStaffs();
         },
 
         confirmDelete(id) {
-            this.vehicleTypeIdToDelete = id;
+            this.staffIdToDelete = id;
             this.showDeleteModal = true;
         },
 
-      async deleteVehicleType() {
+      async deleteStaff() {
     try {
         const mutation = `
-            mutation($vehicle_type_id: ID!) {
-                deleteVehicleType(vehicle_type_id: $vehicle_type_id) {
-                    vehicle_type_id
+            mutation($staff_id: ID!) {
+                deleteStaff(staff_id: $staff_id) {
+                    staff_id
                 }
             }
         `;
 
         const variables = {
-            vehicle_type_id: this.vehicleTypeIdToDelete
+            staff_id: this.staffIdToDelete
         };
 
         const response = await fetch('/graphql', {
@@ -136,15 +139,15 @@ function vehicleTypeData() {
             console.error("GraphQL Errors:", result.errors);
         }
 
-        if (result.data?.deleteVehicleType?.vehicle_type_id) {
+        if (result.data?.deleteStaff?.staff_id) {
             this.showDeleteModal = false;
-            this.vehicleTypeIdToDelete = null;
-            await this.fetchVehicleTypes();
+            this.staffIdToDelete = null;
+            await this.fetchStaffs();
         } else {
-            console.error('Failed to delete vehicle type.');
+            console.error('Failed to delete staff.');
         }
     } catch (error) {
-        console.error('Error deleting vehicle type:', error);
+        console.error('Error deleting staff:', error);
     }
 }
 

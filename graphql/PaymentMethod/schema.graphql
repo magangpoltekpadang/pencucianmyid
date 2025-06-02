@@ -26,11 +26,12 @@ input PaymentMethodFilter {
 }
 
 extend type Query {
-  paymentmethodes(
+  paymentMethodes(
     search: String
+    is_active: Boolean
   ): [PaymentMethod!]! @all(model: "App\\Models\\PaymentMethod\\PaymentMethod")
 
-  paymentmethod(payment_method_id: ID! @eq(key: "payment_method_id")): PaymentMethod
+  paymentMethod(payment_method_id: ID! @eq(key: "payment_method_id")): PaymentMethod
   @find(model: "App\\Models\\PaymentMethod\\PaymentMethod")
 }
 

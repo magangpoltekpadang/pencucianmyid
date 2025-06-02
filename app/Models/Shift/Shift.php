@@ -14,7 +14,7 @@ class Shift extends Model
     protected $fillable = [
         'outlet_id',
         'shift_name',
-        'start_name',
+        'start_time',
         'end_time',
         'is_active'
     ];

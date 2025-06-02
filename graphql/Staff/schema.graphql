@@ -38,11 +38,18 @@ input StaffUpdateInput {
 }
 
 extend type Query {
-  staffs: [Staff!]! @all(model: "App\\Models\\Staff\\Staff")
+  staffs(
+    search: String
+    is_active: Boolean 
+
+  ) :[Staff!]! @all(model: "App\\Models\\Staff\\Staff")
   staff(staff_id: ID! @eq): Staff @find(model: "App\\Models \\Staff\\Staff")
   activeStaffs: [Staff!]! @all(model: "App\\Models\\Staff\\Staff", scopes:["active"])
   outletStaffs(outlet_id: ID! @eq): [Staff!]! @all(model: "App\\Models\\Staff\\Staff")
   roleStaffs(role_id: ID! @eq): [Staff!]! @all(model: "App\\Models\\Staff\\Staff")
+
+  staff(staff_id: ID! @eq(key: "staff_id")): Staff
+  @find(model: "App\\Models\\Staff\\Staff")
 }
 
 extend type Mutation {

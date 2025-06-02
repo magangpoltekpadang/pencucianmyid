@@ -213,7 +213,7 @@
             </div>
         </div>
         <!-- Delete Confirmation Modal -->
-        {{-- <div x-show="showDeleteModal"
+        <div x-show="showDeleteModal"
             class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
             <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Confirm Delete</h2>
@@ -221,11 +221,11 @@
                 <div class="flex justify-end space-x-3">
                     <button @click="showDeleteModal = false"
                         class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Cancel</button>
-                    <button @click="deleteVehicleType()"
+                    <button @click="deleteServiceType()"
                         class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
                 </div>
             </div>
-        </div> --}}
+        </div>
     </div>
 
     @push('scripts')

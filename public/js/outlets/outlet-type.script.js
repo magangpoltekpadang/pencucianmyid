@@ -1,6 +1,6 @@
-function vehicleTypeData() {
+function outletData() {
     return {
-        vehicleTypes: [],
+        outlets: [],
         pagination: {
             current_page: 1,
             last_page: 1,
@@ -13,24 +13,25 @@ function vehicleTypeData() {
         search: '',
         status: '',
         showDeleteModal: false,
-        vehicleTypeIdToDelete: null,
+        outletIdToDelete: null,
 
         init() {
-            this.fetchVehicleTypes();
+            this.fetchOutlets();
         },
 
-        async fetchVehicleTypes() {
+        async fetchOutlets() {
             try {
                 const query = `
                     query($search: String, $is_active: Boolean) {
-                        vehicleTypes(search: $search, is_active: $is_active) {
-                        vehicle_type_id
-                        type_name
-                        code
-                        description
+                        outlets(search: $search, is_active: $is_active) {
+                        outlet_id 
+                        outlet_name 
+                        address 
+                        phone_number 
+                        latitude
+                        longitude
                         is_active
-                        }
-                    }
+                        }}
                     `;
 
                 const variables = {
@@ -51,49 +52,49 @@ function vehicleTypeData() {
                     console.error('GraphQL errors:', result.errors);
                     return;
                 }
-                console.log('Fetched data:', result.data.vehicleTypes);
+                console.log('Fetched data:', result.data.outlets);
 
-                this.vehicleTypes = result.data.vehicleTypes || [];
+                this.outlets = result.data.outlets || [];
 
                 if (this.status !== '') {
                     const isActiveBool = this.status === '1';
-                    this.vehicleTypes = this.vehicleTypes.filter(v => v.is_active === isActiveBool);
+                    this.outlets = this.outlets.filter(o => o.is_active === isActiveBool);
                 }
 
                 if (this.search) {
                     const lowerSearch = this.search.toLowerCase();
-                    this.vehicleTypes = this.vehicleTypes.filter(v =>
-                        v.type_name.toLowerCase().includes(lowerSearch) 
+                    this.outlets = this.outlets.filter(o =>
+                        o.outlet_name.toLowerCase().includes(lowerSearch)
                     );
                 }
 
                 // Karena kita belum dapat info pagination dari GraphQL, kita hitung manual
-                this.pagination.total = this.vehicleTypes.length;
+                this.pagination.total = this.outlets.length;
                 this.pagination.last_page = 1;
                 this.pagination.from = 1;
-                this.pagination.to = this.vehicleTypes.length;
+                this.pagination.to = this.outlets.length;
             } catch (error) {
-                console.error('Error fetching vehicle types:', error);
+                console.error('Error fetching outlets:', error);
             }
         },
 
         async changePage(page) {
             if (page === '...' || isNaN(page)) return;
             this.pagination.current_page = parseInt(page);
-            await this.fetchVehicleTypes();
+            await this.fetchOutlets();
         },
 
         async previousPage() {
             if (this.pagination.current_page > 1) {
                 this.pagination.current_page--;
-                await this.fetchVehicleTypes();
+                await this.fetchOutlets();
             }
         },
 
         async nextPage() {
             if (this.pagination.current_page < this.pagination.last_page) {
                 this.pagination.current_page++;
-                await this.fetchVehicleTypes();
+                await this.fetchOutlets();
             }
         },
 
@@ -101,52 +102,46 @@ function vehicleTypeData() {
             this.search = '';
             this.status = '';
             this.pagination.current_page = 1;
-            await this.fetchVehicleTypes();
+            await this.fetchOutlets();
         },
 
         confirmDelete(id) {
-            this.vehicleTypeIdToDelete = id;
+            this.outletIdToDelete = id;
             this.showDeleteModal = true;
         },
 
-      async deleteVehicleType() {
-    try {
-        const mutation = `
-            mutation($vehicle_type_id: ID!) {
-                deleteVehicleType(vehicle_type_id: $vehicle_type_id) {
-                    vehicle_type_id
+        async deleteOutlet() {
+            try {
+                const mutation = `
+                    mutation($outlet_id: ID!) {
+                        deleteOutlet(outlet_id: $outlet_id) {
+                            outlet_id
+                        }
+                    }
+                `;
+
+                const variables = {
+                    id_outelt: this.outletIdToDelete
+                };
+
+                const response = await fetch('/graphql', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: mutation, variables })
+                });
+
+                const result = await response.json();
+
+                if (result.data?.deleteoutlet?.outlet_id) {
+                    this.showDeleteModal = false;
+                    this.outletIdToDelete = null;
+                    await this.fetchOutlets();
+                } else {
+                    console.error('Failed to delete outlet.');
                 }
+            } catch (error) {
+                console.error('Error deleting outlet:', error);
             }
-        `;
-
-        const variables = {
-            vehicle_type_id: this.vehicleTypeIdToDelete
-        };
-
-        const response = await fetch('/graphql', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query: mutation, variables })
-        });
-
-        const result = await response.json();
-        console.log("Delete response:", result); // Tambahkan ini
-
-        if (result.errors) {
-            console.error("GraphQL Errors:", result.errors);
         }
-
-        if (result.data?.deleteVehicleType?.vehicle_type_id) {
-            this.showDeleteModal = false;
-            this.vehicleTypeIdToDelete = null;
-            await this.fetchVehicleTypes();
-        } else {
-            console.error('Failed to delete vehicle type.');
-        }
-    } catch (error) {
-        console.error('Error deleting vehicle type:', error);
-    }
-}
-
     };
 }

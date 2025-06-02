@@ -14,8 +14,8 @@ class Staff extends Model
     protected $fillable = [
         'name',
         'email',
-        'phone_numebr',
-        'pasword_hash',
+        'phone_number',
+        'password_hash',
         'outlet_id',
         'role_id',
         'is_active'
@@ -27,6 +27,8 @@ class Staff extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
+
+    protected $table= 'staffs';
 
     public function outlet(): BelongsTo 
    {

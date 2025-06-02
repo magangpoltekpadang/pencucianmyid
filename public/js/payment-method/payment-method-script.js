@@ -1,6 +1,6 @@
-function vehicleTypeData() {
+function paymentMethodData() {
     return {
-        vehicleTypes: [],
+        paymentMetodes: [],
         pagination: {
             current_page: 1,
             last_page: 1,
@@ -13,21 +13,20 @@ function vehicleTypeData() {
         search: '',
         status: '',
         showDeleteModal: false,
-        vehicleTypeIdToDelete: null,
+        paymentMethodIdToDelete: null,
 
         init() {
-            this.fetchVehicleTypes();
+            this.fetchPaymentMethodes();
         },
 
-        async fetchVehicleTypes() {
+        async fetchPaymentMethodes() {
             try {
                 const query = `
                     query($search: String, $is_active: Boolean) {
-                        vehicleTypes(search: $search, is_active: $is_active) {
-                        vehicle_type_id
-                        type_name
+                        paymentMethodes(search: $search, is_active: $is_active) {
+                        payment_method_id
+                        methode_name
                         code
-                        description
                         is_active
                         }
                     }
@@ -51,49 +50,49 @@ function vehicleTypeData() {
                     console.error('GraphQL errors:', result.errors);
                     return;
                 }
-                console.log('Fetched data:', result.data.vehicleTypes);
+                console.log('Fetched data:', result.data.paymentMethodes);
 
-                this.vehicleTypes = result.data.vehicleTypes || [];
+                this.paymentMethodes = result.data.paymentMethodes || [];
 
                 if (this.status !== '') {
                     const isActiveBool = this.status === '1';
-                    this.vehicleTypes = this.vehicleTypes.filter(v => v.is_active === isActiveBool);
+                    this.paymentMethodes = this.paymentMethodes.filter(p => p.is_active === isActiveBool);
                 }
 
                 if (this.search) {
                     const lowerSearch = this.search.toLowerCase();
-                    this.vehicleTypes = this.vehicleTypes.filter(v =>
-                        v.type_name.toLowerCase().includes(lowerSearch) 
+                    this.paymentMethodes = this.paymentMethodes.filter(p =>
+                        p.methode_name.toLowerCase().includes(lowerSearch) 
                     );
                 }
 
                 // Karena kita belum dapat info pagination dari GraphQL, kita hitung manual
-                this.pagination.total = this.vehicleTypes.length;
+                this.pagination.total = this.paymentMethodes.length;
                 this.pagination.last_page = 1;
                 this.pagination.from = 1;
-                this.pagination.to = this.vehicleTypes.length;
+                this.pagination.to = this.paymentMethodes.length;
             } catch (error) {
-                console.error('Error fetching vehicle types:', error);
+                console.error('Error fetching payment methodes:', error);
             }
         },
 
         async changePage(page) {
             if (page === '...' || isNaN(page)) return;
             this.pagination.current_page = parseInt(page);
-            await this.fetchVehicleTypes();
+            await this.fetchPaymentMethodes();
         },
 
         async previousPage() {
             if (this.pagination.current_page > 1) {
                 this.pagination.current_page--;
-                await this.fetchVehicleTypes();
+                await this.fetchPaymentMethodes();
             }
         },
 
         async nextPage() {
             if (this.pagination.current_page < this.pagination.last_page) {
                 this.pagination.current_page++;
-                await this.fetchVehicleTypes();
+                await this.fetchPaymentMethodes();
             }
         },
 
@@ -101,52 +100,46 @@ function vehicleTypeData() {
             this.search = '';
             this.status = '';
             this.pagination.current_page = 1;
-            await this.fetchVehicleTypes();
+            await this.fetchPaymentMethodes();
         },
 
         confirmDelete(id) {
-            this.vehicleTypeIdToDelete = id;
+            this.paymentMethodIdToDelete = id;
             this.showDeleteModal = true;
         },
 
-      async deleteVehicleType() {
-    try {
-        const mutation = `
-            mutation($vehicle_type_id: ID!) {
-                deleteVehicleType(vehicle_type_id: $vehicle_type_id) {
-                    vehicle_type_id
+        async deletePaymentMethod() {
+            try {
+                const mutation = `
+                    mutation($payment_method_id: ID!) {
+                        deletePaymentMethod(payment_method_id: $payment_method_id) {
+                            payment_method_id
+                        }
+                    }
+                `;
+
+                const variables = {
+                    payment_method_id: this.paymentMethodIdToDelete
+                };
+
+                const response = await fetch('/graphql', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: mutation, variables })
+                });
+
+                const result = await response.json();
+
+                if (result.data?.deletePaymentMethod?.payment_method_id) {
+                    this.showDeleteModal = false;
+                    this.paymentMethodIdToDelete = null;
+                    await this.fetchPaymentMethodes();
+                } else {
+                    console.error('Failed to delete payment method.');
                 }
+            } catch (error) {
+                console.error('Error deleting payment method:', error);
             }
-        `;
-
-        const variables = {
-            vehicle_type_id: this.vehicleTypeIdToDelete
-        };
-
-        const response = await fetch('/graphql', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query: mutation, variables })
-        });
-
-        const result = await response.json();
-        console.log("Delete response:", result); // Tambahkan ini
-
-        if (result.errors) {
-            console.error("GraphQL Errors:", result.errors);
         }
-
-        if (result.data?.deleteVehicleType?.vehicle_type_id) {
-            this.showDeleteModal = false;
-            this.vehicleTypeIdToDelete = null;
-            await this.fetchVehicleTypes();
-        } else {
-            console.error('Failed to delete vehicle type.');
-        }
-    } catch (error) {
-        console.error('Error deleting vehicle type:', error);
-    }
-}
-
     };
 }

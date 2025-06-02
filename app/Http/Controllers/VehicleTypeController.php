@@ -56,7 +56,8 @@ class VehicleTypeController extends Controller
      */
     public function edit(string $id)
     {
-        return view('vehicles.edit');
+        $vehicle_types = VehicleType::findOrFail($id);
+        return view('vehicles.edit', compact('vehicle_types'));
     }
 
     /**
@@ -64,14 +65,17 @@ class VehicleTypeController extends Controller
      */
     public function update(Request $request, string $id)
     {
+
+        $vehicle_types = VehicleType::findOrFail($id);
+
         $validated = $request->validate([
             'type_name' => 'required',
             'code' => 'required',
             'description' => 'required',
-            'is_active' => 'nullable|in:1,0',
+            'is_active' => 'nullable|boolean',
 
         ]);
-        VehicleType::where('vehicle_type_id', $id)->update($validated);
+        $vehicle_types->update($validated);
         return redirect('vehicle-types');
     }
 
@@ -80,8 +84,8 @@ class VehicleTypeController extends Controller
      */
     public function destroy(string $id)
     {
-        $vehicleType = VehicleType::findOrFail($id);
-        $vehicleType->delete();
+        $vehicle_types = VehicleType::findOrFail($id);
+        $vehicle_types->delete();
         // VehicleType::destroy($id);
         return response()->json(['message' => 'Deleted successfully']);
     }

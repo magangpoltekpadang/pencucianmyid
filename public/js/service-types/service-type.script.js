@@ -109,38 +109,44 @@ function serviceTypeData() {
             this.showDeleteModal = true;
         },
 
-        async deleteVServiceType() {
-            try {
-                const mutation = `
-                    mutation($service_type_id: ID!) {
-                        deleteServiceType(service_type_id: $service_type_id) {
-                            service_type_id
-                        }
-                    }
-                `;
-
-                const variables = {
-                    service_type_id: this.serviceTypeIdToDelete
-                };
-
-                const response = await fetch('/graphql', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: mutation, variables })
-                });
-
-                const result = await response.json();
-
-                if (result.data?.deleteserviceType?.service_type_id) {
-                    this.showDeleteModal = false;
-                    this.serviceTypeIdToDelete = null;
-                    await this.fetchServiceTypes();
-                } else {
-                    console.error('Failed to delete service type.');
+             async deleteServiceType() {
+    try {
+        const mutation = `
+            mutation($service_type_id: ID!) {
+                deleteServiceType(service_type_id: $service_type_id) {
+                    service_type_id
                 }
-            } catch (error) {
-                console.error('Error deleting service type:', error);
             }
+        `;
+
+        const variables = {
+            service_type_id: this.serviceTypeIdToDelete
+        };
+
+        const response = await fetch('/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: mutation, variables })
+        });
+
+        const result = await response.json();
+        console.log("Delete response:", result); // Tambahkan ini
+
+        if (result.errors) {
+            console.error("GraphQL Errors:", result.errors);
         }
+
+        if (result.data?.deleteServiceType?.service_type_id) {
+            this.showDeleteModal = false;
+            this.serviceTypeIdToDelete = null;
+            await this.fetchServiceTypes();
+        } else {
+            console.error('Failed to delete service type.');
+        }
+    } catch (error) {
+        console.error('Error deleting service type:', error);
+    }
+}
+
     };
 }

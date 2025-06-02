@@ -9,7 +9,7 @@ class Outlet extends Model
 {
     use HasFactory;
 
-    protected $primarykey = 'id_outlet';
+    protected $primarykey = 'outlet_id';
 
     protected $fillable = [
         'outlet_name',

@@ -1,5 +1,5 @@
 type Outlet {
-  id_outlet: ID!
+  outlet_id: ID!
   outlet_name: String!
   address: String!
   phone_number: String!
@@ -40,7 +40,7 @@ extend type Query {
     is_active: Boolean
   ): [Outlet!]! @all(model: "App\\Models\\Outlet\\Outlet")
 
-  outlet(id_outlet: ID! @eq(key: "id_outle")): Outlet
+  outlet(outlet_id: ID! @eq(key: "id_outle")): Outlet
   @find(model: "App\\Models\\Outlet\\Outlet")
 }
 
@@ -49,11 +49,11 @@ extend type Mutation {
     @create(model: "App\\Models\\Outlet\\Outlet")
 
   updateOutlet(
-    id_outlet: ID! @eq(key: "id_outlet"),
+    outlet_id: ID! @eq(key: "outlet_id"),
     input: OutletInput! @spread
   ): Outlet @update(model: "App\\Models\\Outlet\\Outlet")
     
-  deleteOutlet(id_outlet: ID! @eq(key: "id_outlet")): Outlet
+  deleteOutlet(outlet_id: ID! @eq(key: "outlet_id")): Outlet
     @delete(model: "App\\Models\\Outlet\\Outlet")
 
 }

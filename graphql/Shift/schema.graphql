@@ -29,7 +29,11 @@ input ShiftUpdateInput {
 }
 
 extend type Query {
-  shifts: [Shift!]! @all(model: "App\\Models\\Shift\\Shift")
+  shifts(
+    search: String
+    is_active: Boolean 
+  )
+  : [Shift!]! @all(model: "App\\Models\\Shift\\Shift")
   shift(shift_id: ID! @eq): Shift @find(model: "App\\Models \\Shift\\Shift")
   activeShifts: [Shift!]! @all(model: "App\\Models\\Shift\\Shift", scopes:["active"])
   outletShifts(outlet_id: ID! @eq): [Shift!]! @all(model: "App\\Models\\Shift\\Shift")

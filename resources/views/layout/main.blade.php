@@ -41,6 +41,26 @@
                     class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">
                     <i class="fas fa-tools mr-2"></i> Service Types
                 </a>
+                <a href="/services"
+                    class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">
+                    <i class="fas fa-tools mr-2"></i> Service
+                </a>
+                <a href="/outlets"
+                    class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">
+                    <i class="fas fa-store mr-2"></i> Outlet
+                </a>
+                <a href="/payment-methodes"
+                    class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">
+                    <i class="fas fa-credit-card mr-2"></i> Payment Method
+                </a>
+                <a href="/staffs"
+                    class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">
+                    <i class="fas fa-credit-card mr-2"></i> Staff
+                </a>
+                <a href="/shifts"
+                    class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">
+                    <i class="fas fa-credit-card mr-2"></i> Shift
+                </a>
                 <a href="/roles"
                     class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">
                     <i class="fas fa-users mr-2"></i> Roles
@@ -51,8 +71,8 @@
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Top Navigation -->
-            <header class="bg-white shadow-sm">
-                <div class="flex items-center justify-between px-6 py-4">
+            <header class="bg-black shadow-sm">
+                <div class="flex items-center justify-between px-6 py-2">
                     <h2 class="text-xl font-semibold text-gray-800">@yield('title')</h2>
                 </div>
             </header>

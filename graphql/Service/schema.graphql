@@ -36,7 +36,11 @@ input ServiceUpdateInput {
 }
 
 extend type Query {
-  services: [Service!]! @all(model: "App\\Models\\Service\\Service")
+  services(
+    search: String
+    is_active: Boolean 
+
+  ): [Service!]! @all(model: "App\\Models\\Service\\Service")
   service(service_id: ID! @eq): Service @find(model: "App\\Models \\Service\\Service")
   activeservices: [Service!]! @all(model: "App\\Models\\Service\\Service", scopes:["active"])
   servicetypeServices(service_id: ID! @eq): [Service!]! @all(model: "App\\Models\\Service\\Service")

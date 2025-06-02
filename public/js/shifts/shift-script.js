@@ -1,6 +1,6 @@
-function vehicleTypeData() {
+function shiftData() {
     return {
-        vehicleTypes: [],
+        shifts: [],
         pagination: {
             current_page: 1,
             last_page: 1,
@@ -13,21 +13,22 @@ function vehicleTypeData() {
         search: '',
         status: '',
         showDeleteModal: false,
-        vehicleTypeIdToDelete: null,
+        shiftIdToDelete: null,
 
         init() {
-            this.fetchVehicleTypes();
+            this.fetchShifts();
         },
 
-        async fetchVehicleTypes() {
+        async fetchShifts() {
             try {
                 const query = `
                     query($search: String, $is_active: Boolean) {
-                        vehicleTypes(search: $search, is_active: $is_active) {
-                        vehicle_type_id
-                        type_name
-                        code
-                        description
+                        shifts(search: $search, is_active: $is_active) {
+                        shift_id
+                        outlet_id
+                        shift_name
+                        start_time
+                        end_time
                         is_active
                         }
                     }
@@ -51,49 +52,49 @@ function vehicleTypeData() {
                     console.error('GraphQL errors:', result.errors);
                     return;
                 }
-                console.log('Fetched data:', result.data.vehicleTypes);
+                console.log('Fetched data:', result.data.shifts);
 
-                this.vehicleTypes = result.data.vehicleTypes || [];
+                this.shifts = result.data.shifts || [];
 
                 if (this.status !== '') {
                     const isActiveBool = this.status === '1';
-                    this.vehicleTypes = this.vehicleTypes.filter(v => v.is_active === isActiveBool);
+                    this.shifts = this.shifts.filter(s => s.is_active === isActiveBool);
                 }
 
                 if (this.search) {
                     const lowerSearch = this.search.toLowerCase();
-                    this.vehicleTypes = this.vehicleTypes.filter(v =>
-                        v.type_name.toLowerCase().includes(lowerSearch) 
+                    this.shifts = this.shifts.filter(s =>
+                        s.shift_name.toLowerCase().includes(lowerSearch) 
                     );
                 }
 
                 // Karena kita belum dapat info pagination dari GraphQL, kita hitung manual
-                this.pagination.total = this.vehicleTypes.length;
+                this.pagination.total = this.shifts.length;
                 this.pagination.last_page = 1;
                 this.pagination.from = 1;
-                this.pagination.to = this.vehicleTypes.length;
+                this.pagination.to = this.shifts.length;
             } catch (error) {
-                console.error('Error fetching vehicle types:', error);
+                console.error('Error fetching shifts:', error);
             }
         },
 
         async changePage(page) {
             if (page === '...' || isNaN(page)) return;
             this.pagination.current_page = parseInt(page);
-            await this.fetchVehicleTypes();
+            await this.fetchShifts();
         },
 
         async previousPage() {
             if (this.pagination.current_page > 1) {
                 this.pagination.current_page--;
-                await this.fetchVehicleTypes();
+                await this.fetchShifts();
             }
         },
 
         async nextPage() {
             if (this.pagination.current_page < this.pagination.last_page) {
                 this.pagination.current_page++;
-                await this.fetchVehicleTypes();
+                await this.fetchSraffs();
             }
         },
 
@@ -101,26 +102,26 @@ function vehicleTypeData() {
             this.search = '';
             this.status = '';
             this.pagination.current_page = 1;
-            await this.fetchVehicleTypes();
+            await this.fetchShifts();
         },
 
         confirmDelete(id) {
-            this.vehicleTypeIdToDelete = id;
+            this.shiftIdToDelete = id;
             this.showDeleteModal = true;
         },
 
-      async deleteVehicleType() {
+      async deleteShift() {
     try {
         const mutation = `
-            mutation($vehicle_type_id: ID!) {
-                deleteVehicleType(vehicle_type_id: $vehicle_type_id) {
-                    vehicle_type_id
+            mutation($shift_id: ID!) {
+                deleteShift(shift_id: $shift_id) {
+                    shift_id
                 }
             }
         `;
 
         const variables = {
-            vehicle_type_id: this.vehicleTypeIdToDelete
+            shift_id: this.shiftIdToDelete
         };
 
         const response = await fetch('/graphql', {
@@ -136,15 +137,15 @@ function vehicleTypeData() {
             console.error("GraphQL Errors:", result.errors);
         }
 
-        if (result.data?.deleteVehicleType?.vehicle_type_id) {
+        if (result.data?.deleteShift?.shift_id) {
             this.showDeleteModal = false;
-            this.vehicleTypeIdToDelete = null;
-            await this.fetchVehicleTypes();
+            this.shiftIdToDelete = null;
+            await this.fetchShifts();
         } else {
-            console.error('Failed to delete vehicle type.');
+            console.error('Failed to delete shift.');
         }
     } catch (error) {
-        console.error('Error deleting vehicle type:', error);
+        console.error('Error deleting shift:', error);
     }
 }
 

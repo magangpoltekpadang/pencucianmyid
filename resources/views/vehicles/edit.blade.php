@@ -1,7 +1,7 @@
 @extends('layout.main')
 
 @section('content')
-    <form action="/vehicle-types/" method="POST" class="max-w-xl mx-auto p-6 bg-white rounded shadow">
+    <form action="{{ ('vehicle-types/' . $vehicle_types->vehicle_type_id) }}" method="POST" class="max-w-xl mx-auto p-6 bg-white rounded shadow">
         @method('PUT')
         @csrf
 
@@ -13,7 +13,7 @@
             <label for="name" class="block text-sm font-medium text-gray-700">Type Name</label>
             <input type="text" name="type_name" id="type_name"
                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
-                value="{{ old('type_name') }}">
+                value="{{ old('type_name', $vehicle_types->type_name) }}">
             @error('type_name')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
@@ -24,7 +24,7 @@
             <label for="code" class="block text-sm font-medium text-gray-700">Code</label>
             <input type="text" name="code" id="code"
                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
-                value="{{ old('code') }}">
+                value="{{ old('code', $vehicle_types->code) }}">
             @error('code')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
@@ -34,7 +34,7 @@
         <div class="mb-4">
             <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
             <textarea name="description" id="description" rows="3"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">{{ old('description') }}</textarea>
+                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">{{ old('description', $vehicle_types->description) }}</textarea>
             @error('description')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
@@ -45,8 +45,8 @@
             <label for="is_active" class="block text-sm font-medium text-gray-700">Status</label>
             <select name="is_active" id="is_active"
                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="1">Active</option>
-                <option value="0">Inactive</option>
+                <option value="1" {{ $vehicle_types->is_active == 1 ? 'selected' : '' }}>Active</option>
+                <option value="0" {{ $vehicle_types->is_active == 1 ? 'selected' : '' }}>Inactive</option>
             </select>
             @error('is_active')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
