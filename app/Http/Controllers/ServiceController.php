@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Outlet\Outlet;
 use App\Models\Service\Service;
+use App\Models\ServiceType\ServiceType;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -21,7 +23,7 @@ class ServiceController extends Controller
      */
     public function create()
     {
-        //
+        return view('service.create', ['outlets' => Outlet::all(), 'service_types' => ServiceType::all()]);
     }
 
     /**
@@ -29,7 +31,19 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'service_name' => 'required',
+            'service_type_id' => 'required',
+            'price' => 'required',
+            'estimated_duration' => 'required',
+            'description' => 'required',
+            'outlet_id' => 'required',
+            'is_active' => 'nullable|in:1,0',
+
+
+        ]);
+        Service::create($validated);
+        return redirect('services');
     }
 
     /**
@@ -45,7 +59,10 @@ class ServiceController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $services = Service::findOrFail($id);
+        $outlets = Outlet::all();
+        $service_types = ServiceType::all();
+        return view('service.edit', compact('services', 'outlets','service_types'));
     }
 
     /**
@@ -53,7 +70,21 @@ class ServiceController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $services = Service::findOrFail($id);
+        $validated = $request->validate([
+            'service_name' => 'required',
+            'service_type_id' => 'required',
+            'price' => 'required',
+            'estimated_duration' => 'required',
+            'description' => 'required',
+            'outlet_id' => 'required',
+            'is_active' => 'nullable|in:1,0',
+
+
+        ]);
+
+        $services->update($validated);
+        return redirect('services');
     }
 
     /**

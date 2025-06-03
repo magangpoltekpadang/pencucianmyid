@@ -55,11 +55,19 @@
                 </a>
                 <a href="/staffs"
                     class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">
-                    <i class="fas fa-credit-card mr-2"></i> Staff
+                    <i class="fas fa-users mr-2"></i> Staff
                 </a>
                 <a href="/shifts"
                     class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">
-                    <i class="fas fa-credit-card mr-2"></i> Shift
+                    <i class="fas fa-clock mr-2"></i> Shift
+                </a>
+                <a href="/expenses"
+                    class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">
+                    <i class="fas fa-dollar-sign mr-2"></i> Expense
+                </a>
+                <a href="/transactions"
+                    class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">
+                    <i class="fas fa-exchange-alt mr-2"></i> Transaction
                 </a>
                 <a href="/roles"
                     class="flex px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 items-center">

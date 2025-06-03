@@ -17,7 +17,7 @@ class Service extends Model
         'estimated_duration',
         'description',
         'is_active',
-        'outle_id'
+        'outlet_id'
         
     ];
 
@@ -26,6 +26,8 @@ class Service extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
+
+     protected $table= 'services';
 
     public function serviceType(): BelongsTo
     {

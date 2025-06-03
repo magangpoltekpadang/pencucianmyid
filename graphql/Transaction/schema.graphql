@@ -1,6 +1,6 @@
 type Transaction {
   transaction_id: ID!
-  transaction_code: String!
+  transaction_code: String
   customer_id: Int!
   outlet_id: String!
   transaction_date: DateTime!
@@ -14,7 +14,7 @@ type Transaction {
   shift_id: Int!
   receipt_printed: Boolean!
   whatsapp_sent: Boolean!
-  notes: String!
+  notes: String
   created_at: DateTime!
   updated_at: DateTime!
 }
@@ -66,6 +66,10 @@ input TransactionFilter {
 extend type Query {
   transactions(
     search: String
+    gate_opened: Boolean
+    receipt_printed:Boolean
+    whatsapp_sent: Boolean
+
   ): [Transaction!]! @all(model: "App\\Models\\Transaction\\Transaction")
 
   transaction(transaction_id: ID! @eq(key: "transaction_id")): Transaction
