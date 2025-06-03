@@ -2,17 +2,17 @@ scalar Time @scalar(class: "App\\GraphQL\\Scalars\\TimeScalar")
 
 type Staff {
   staff_id: ID!
-  name: String!
-  email: String!
-  phone_number: String!
-  password_hash: String!
-  outlet_id: ID!
+  name: String
+  email: String
+  phone_number: String
+  password_hash: String
+  outlet_id: ID
   outlet: Outlet @belongsTo
-  role_id: ID!
+  role_id: ID
   role: Role @belongsTo
-  is_active: Boolean!
-  created_at: DateTime!
-  updated_at: DateTime!
+  is_active: Boolean
+  created_at: DateTime
+  updated_at: DateTime
 }
 
 input StaffCreateInput {
